@@ -1,0 +1,27 @@
+FROM python:3.10.12
+
+# install environmenrt dependencies
+RUN apt-get update
+RUN apt-get install --no-install-recommends netcat-traditional
+RUN apt-get clean
+
+# set working directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# add requirements
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+# install requirements
+RUN pip3 install Flask --progress-bar off
+RUN pip3 install -r requirements.txt
+
+# add entrypoint.sh
+COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+
+# add app
+COPY . /usr/src/app
+
+# run server
+# CMD python3 manage.py run -h 0.0.0.0
+CMD ["./entrypoint.sh"]
